@@ -232,4 +232,3 @@ def add_product(seller_id: int, picture: str):
 @app.post("/add_product_info")
 def add_product_info(seller_id: int, product_id: int, info: str):
     return add_product_info_from_id(seller_id, product_id, info)
-
