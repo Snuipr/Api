@@ -4,27 +4,29 @@ from datetime import datetime
 
 def get_buyer_from_id(id):
     """Работает"""
-    conn = psycopg2.connect(dbname="krestiki_noliki", user="postgres", password="1", host="localhost", port="5432")
+    conn = psycopg2.connect(dbname="API", user="postgres", password="1", host="localhost", port="5432")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM buyers WHERE id = %s", (id, ))
+    cursor.execute("SELECT * FROM buyers WHERE id = %s", (id,))
     result = cursor.fetchall()
+    cursor.close()
     conn.close()
     if len(result) > 0:
         row = result[0]
         return ({
             "id": row[0],
-            "balance": row[1],
-            "number_buy": row[2],
-            "name": row[3]
+            "name": row[1],
+            "balance": row[2],
+            "number_buy": row[3]
         })
     return "Нет информации по ID"
 
 def get_seller_from_id(id):
     """Работает"""
-    conn = psycopg2.connect(dbname="krestiki_noliki", user="postgres", password="1", host="localhost", port="5432")
+    conn = psycopg2.connect(dbname="API", user="postgres", password="1", host="localhost", port="5432")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM sellers WHERE id = %s", (id, ))
+    cursor.execute("SELECT * FROM sellers WHERE id = %s", (id,))
     result = cursor.fetchall()
+    cursor.close()
     conn.close()
     if len(result) > 0:
         row = result[0]
@@ -40,10 +42,11 @@ def get_seller_from_id(id):
     return "Нет информации по этому ID"
 def get_product_from_id(id, product_id):
     """Работает"""
-    conn = psycopg2.connect(dbname="krestiki_noliki", user="postgres", password="1", host="localhost", port="5432")
+    conn = psycopg2.connect(dbname="API", user="postgres", password="1", host="localhost", port="5432")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM products WHERE user_id = %s and product_id = %s", (id, product_id))
+    cursor.execute("SELECT * FROM products WHERE seller_id = %s and product_id = %s", (id, product_id))
     result = cursor.fetchall()
+    cursor.close()
     conn.close()
     if len(result) > 0:
         row = result[0]
@@ -55,10 +58,11 @@ def get_product_from_id(id, product_id):
     return "Нет информации по этому ID"
 
 def get_last_product_id(seller_id):
-    conn = conn = psycopg2.connect(dbname="krestiki_noliki", user="postgres", password="1", host="localhost", port="5432")
+    conn = conn = psycopg2.connect(dbname="API", user="postgres", password="1", host="localhost", port="5432")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM products WHERE user_id = %s", (seller_id,))
+    cursor.execute("SELECT * FROM products WHERE seller_id = %s", (seller_id,))
     result = cursor.fetchall()
+    cursor.close()
     conn.close()
     if len(result) > 0:
         row = result[-1]
@@ -69,10 +73,11 @@ def get_last_product_id(seller_id):
     return "Нет информации по этому ID"
 def get_product_info_from_info(id, prod_id):
     """Работает"""
-    conn = psycopg2.connect(dbname="krestiki_noliki", user="postgres", password="1", host="localhost", port="5432")
+    conn = psycopg2.connect(dbname="API", user="postgres", password="1", host="localhost", port="5432")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM product_info WHERE user_id = %s AND product_id = %s", (id, prod_id))
+    cursor.execute("SELECT * FROM product_info WHERE seller_id = %s AND product_id = %s", (id, prod_id))
     result = cursor.fetchall()
+    cursor.close()
     conn.close()
     if len(result) > 0:
         row = result[0]
@@ -85,10 +90,11 @@ def get_product_info_from_info(id, prod_id):
 
 def get_check(id):
     """Работает"""
-    conn = psycopg2.connect(dbname="krestiki_noliki", user="postgres", password="1", host="localhost", port="5432")
+    conn = psycopg2.connect(dbname="API", user="postgres", password="1", host="localhost", port="5432")
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM check WHERE id = %s", (id,))
     result = cursor.fetchall()
+    cursor.close()
     conn.close()
     if len(result) > 0:
         row = result[0]
@@ -102,31 +108,33 @@ def get_check(id):
 def add_new_seller(name: str, avatar: str):
     """Работает"""
     date_time = datetime.now().date()
-    conn = psycopg2.connect(dbname="krestiki_noliki", user="postgres", password="1", host="localhost", port="5432")
+    conn = psycopg2.connect(dbname="API", user="postgres", password="1", host="localhost", port="5432")
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO sellers(name, avatar, data_register,) VALUES (%s, %s, %s,)", (name, avatar, date_time,))
+    cursor.execute("INSERT INTO sellers(seller_name, avatar, data_register) VALUES (%s, %s, %s)", (name, avatar, date_time))
     conn.commit()
+    cursor.close()
     conn.close()
-    return f"Ваш аккаунт успешно добавлен {datetime}"
+    return f"Ваш аккаунт успешно добавлен {date_time}"
 
 def update_seller_balance(id, pay):
     """Работает"""
     info = get_seller_from_id(id)
     if type(info) == str:
         return info
-    conn = psycopg2.connect(dbname="krestiki_noliki", user="postgres", password="1", host="localhost", port="5432")
+    conn = psycopg2.connect(dbname="API", user="postgres", password="1", host="localhost", port="5432")
     cursor = conn.cursor()
-    cursor.execute("UPDATE sellers SET balance = %s WHERE id = %s", (info["balance"] + pay, id,))
+    cursor.execute("UPDATE sellers SET balance = %s WHERE id = %s", (info["balance"] + pay, id))
     conn.commit()
+    cursor.close()
     conn.close()
     return f"Ваш баланс: {info['balance'] + pay}"
 
 def add_new_user(name: str):
-    conn = psycopg2.connect(dbname="krestiki_noliki", user="postgres", password="1", host="localhost", port="5432")
+    conn = psycopg2.connect(dbname="API", user="postgres", password="1", host="localhost", port="5432")
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO buyers(name) VALUES (%s)",
-                   (name,))
+    cursor.execute("INSERT INTO buyers(buyer_name) VALUES (%s)", (name,))
     conn.commit()
+    cursor.close()
     conn.close()
     return f"Ваш аккаунт успешно добавлен"
 
@@ -134,25 +142,28 @@ def update_user_balance(id, pay):
     info = get_buyer_from_id(id)
     if type(info) == str:
         return info
-    conn = psycopg2.connect(dbname="krestiki_noliki", user="postgres", password="1", host="localhost", port="5432")
+    conn = psycopg2.connect(dbname="API", user="postgres", password="1", host="localhost", port="5432")
     cursor = conn.cursor()
-    cursor.execute("UPDATE buyers SET balance = %s WHERE id = %s", (info["balance"] + pay, id,))
+    cursor.execute("UPDATE buyers SET balance = %s WHERE id = %s", (info["balance"] + pay, id))
     conn.commit()
+    cursor.close()
     conn.close()
     return f"Ваш баланс: {info['balance'] + pay}"
 
 def add_product_from_id(seller_id, picture):
     """Работает"""
     info = get_last_product_id(seller_id)
-    conn = psycopg2.connect(dbname="krestiki_noliki", user="postgres", password="1", host="localhost", port="5432")
+    conn = psycopg2.connect(dbname="API", user="postgres", password="1", host="localhost", port="5432")
     cursor = conn.cursor()
     if type(info) == str:
-        cursor.execute("INSERT INTO products(user_id, product_id, picture) VALUES(%s, %s, %s)", (seller_id, 1, picture))
+        cursor.execute("INSERT INTO products(seller_id, product_id, picture) VALUES(%s, %s, %s)", (seller_id, 1, picture))
         conn.commit()
+        cursor.close()
         conn.close()
         return "Ваш первый продукт"
-    cursor.execute("INSERT INTO products(user_id, product_id, picture) VALUES(%s, %s, %s)", (seller_id, info["product_id"]+1, picture))
+    cursor.execute("INSERT INTO products(seller_id, product_id, picture) VALUES(%s, %s, %s)", (seller_id, info["product_id"]+1, picture))
     conn.commit()
+    cursor.close()
     conn.close()
     return "Ваш не первый продукт"
 
@@ -161,15 +172,17 @@ def add_product_info_from_id(seller_id, product_id, text):
     if type(inf1) == str:
         return "Ошибка продукт не найден"
     info = get_product_info_from_info(seller_id, product_id)
-    conn = psycopg2.connect(dbname="krestiki_noliki", user="postgres", password="1", host="localhost", port="5432")
+    conn = psycopg2.connect(dbname="API", user="postgres", password="1", host="localhost", port="5432")
     cursor = conn.cursor()
     if type(info) == str:
-        cursor.execute("INSERT INTO product_info(user_id, product_id, text) VALUES(%s, %s, %s)", (seller_id, product_id, text))
+        cursor.execute("INSERT INTO product_info(seller_id, product_id, info) VALUES(%s, %s, %s)", (seller_id, product_id, text))
         conn.commit()
+        cursor.close()
         conn.close()
         return "Информация добавлена"
-    cursor.execute("UPDATE product_info SET text = %s WHERE user_id = %s AND product_id = %s", (text, seller_id, product_id))
+    cursor.execute("UPDATE product_info SET info = %s WHERE seller_id = %s AND product_id = %s", (text, seller_id, product_id))
     conn.commit()
+    cursor.close()
     conn.close()
     return "Информация обновлена"
 
