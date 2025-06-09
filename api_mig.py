@@ -20,8 +20,8 @@ def create_table():
     cursor = conn.cursor()
     create_sellers_table = '''
         CREATE TABLE IF NOT EXISTS sellers (
-            id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            seller_name VARCHAR(50) UNIQUE NOT NULL,
+            id BIGINT GENERATED ALWAYS AS IDENTITY,
+            seller_name VARCHAR(50) NOT NULL,
             balance BIGINT DEFAULT 0,
             rating NUMERIC(2, 1) DEFAULT 0,
             num_sell BIGINT DEFAULT 0,
@@ -31,8 +31,8 @@ def create_table():
         '''
     create_buyers_table = '''
         CREATE TABLE IF NOT EXISTS buyers (
-        id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-        buyer_name VARCHAR(50) UNIQUE NOT NULL,
+        id BIGINT GENERATED ALWAYS AS IDENTITY,
+        buyer_name VARCHAR(50) NOT NULL,
         balance BIGINT DEFAULT 0,
         num_sell BIGINT DEFAULT 0   
         )
@@ -40,13 +40,13 @@ def create_table():
     create_products_table = '''
         CREATE TABLE IF NOT EXISTS products (
         seller_id BIGINT,
-        product_id BIGINT,
+        product_id BIGINT DEFAULT 1,
         picture TEXT       
         )'''
     create_product_info_table = '''
         CREATE TABLE IF NOT EXISTS product_info (
         seller_id BIGINT,
-        product_id BIGINT,
+        product_id BIGINT DEFAULT 1,
         info TEXT       
         )'''
     create_buy_check_table = '''
